@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Zapisy{% endblock %}
+
+{% block body %}
+    <h2>Formularz do zapisywania: </h2>
+
+    {{ include('klient/_form.html.twig') }}
+
+    <a href="{{ path('app_klient_index') }}">Wróć do listy</a>
+{% endblock %}

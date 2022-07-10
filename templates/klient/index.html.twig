@@ -1,0 +1,158 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Klient index{% endblock %}
+
+{% block body %}
+<style>
+    li{
+        margin-left: 2px;
+    }
+    </style>
+
+
+
+
+
+    </div>
+    {% if (is_granted('ROLE_ADMIN'))%}
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Imie</th>
+            <th>Nazwisko</th>
+            <th>Ilosc Osób</th>
+            <th>Przyczepa</th>
+            <th>Namiot</th>
+            <th>Samochod</th>
+            <th>Data Przyjazdu</th>
+            <th>Data Odjazdu</th>
+            <th>Suma dni</th>
+            <th>Akcje</th>
+            <th>Cena </th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for klient in klients %}
+            <tr>
+                <td>{{ klient.id }}</td>
+                <td>{{ klient.imie }}</td>
+                <td>{{ klient.nazwisko }}</td>
+                <td>{{ klient.iloscOsob }}</td>
+                <td>{{ klient.przyczepa ? 'Tak' : 'Nie' }}</td>
+                <td>{{ klient.namiot ? 'Tak' : 'Nie' }}</td>
+                <td>{{ klient.samochod ? 'Tak' : 'Nie' }}</td>
+                <td>{{ klient.dataPrzyjazdu ? klient.dataPrzyjazdu|date('Y-m-d') : '' }}</td>
+                <td>{{ klient.dataOdjazdu ? klient.dataOdjazdu|date('Y-m-d') : '' }}</td>
+
+
+                <td>
+
+                    {% set difference = date(klient.dataOdjazdu|date('Y-m-d')).diff(date(klient.dataPrzyjazdu|date('Y-m-d'))) %}
+                    {% set Days = difference.days %}
+                    {% if Days == 1 %}
+                        1 day
+                    {% else %}
+                        {{ Days }}
+
+                    {% endif %}
+
+                </td>
+
+
+                <td>
+                    <a href="{{ path('app_klient_delete', {'id': klient.id}) }}">Usuń</a>
+                    <a href="{{ path('app_klient_edit', {'id': klient.id}) }}">Edytuj</a>
+                </td>
+                <td>
+                    {% set osoba=15 %}
+                    {% set przyczepa=20 %}
+                    {% set namiot=5 %}
+                    {% set samochod=5 %}
+                    {{(klient.przyczepa*przyczepa+klient.namiot*namiot+klient.samochod*samochod+klient.iloscOsob*osoba)*Days}} PLN
+                </td>
+            </tr>
+
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+        <a class="btn btn-primary" href="{{ path('app_klient_new') }}" role="button">Nowy klient</a>
+
+
+    {% elseif (is_granted('ROLE_USER'))%}
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Imię </th>
+            <th>Ilosc Osób</th>
+            <th>Przyczepa</th>
+            <th>Namiot</th>
+            <th>Samochod</th>
+            <th>Data Przyjazdu</th>
+            <th>Data Odjazdu</th>
+            <th>Suma dni</th>
+            <th>Cena </th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for klient in klients %}
+            <tr>
+                <td>{{ klient.imie }}</td>
+                <td>{{ klient.iloscOsob }}</td>
+                <td>{{ klient.przyczepa ? 'Tak' : 'Nie' }}</td>
+                <td>{{ klient.namiot ? 'Tak' : 'Nie' }}</td>
+                <td>{{ klient.samochod ? 'Tak' : 'Nie' }}</td>
+                <td>{{ klient.dataPrzyjazdu ? klient.dataPrzyjazdu|date('Y-m-d') : '' }}</td>
+                <td>{{ klient.dataOdjazdu ? klient.dataOdjazdu|date('Y-m-d') : '' }}</td>
+
+
+                <td>
+
+                    {% set difference = date(klient.dataOdjazdu|date('Y-m-d')).diff(date(klient.dataPrzyjazdu|date('Y-m-d'))) %}
+                    {% set Days = difference.days %}
+                    {% if Days == 1 %}
+                        1 day
+                    {% else %}
+                        {{ Days }}
+
+                    {% endif %}
+
+                </td>
+
+
+
+                <td>
+                    {% set osoba=15 %}
+                    {% set przyczepa=20 %}
+                    {% set namiot=5 %}
+                    {% set samochod=5 %}
+                    {{(klient.przyczepa*przyczepa+klient.namiot*namiot+klient.samochod*samochod+klient.iloscOsob*osoba)*Days}} PLN
+                </td>
+            </tr>
+
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+        <a class="btn btn-primary" href="{{ path('app_klient_new') }}" role="button">Wybierz termin</a>
+       {% else %}
+
+           <h2>Cennik:</h2>
+           Osoba: 15 zł za dzień <br>
+           Przyczepa: 20 zł za dzień <br>
+           Namiot: 5 zł za dzień <br>
+           Samochód: 5 zł za dzień <br>
+           Rejestracja elektroniczna: <br> <a class="btn btn-primary" href="{{ path('app_register') }}" role="button">Rejestracja</a>
+
+{% endif %}
+{% endblock %}
